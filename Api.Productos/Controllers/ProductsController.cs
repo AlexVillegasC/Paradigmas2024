@@ -9,7 +9,7 @@ namespace Reports.Controllers;
 [ApiController]
 public class ProductsController : ControllerBase
 {
-    private readonly string connectionString = "Server=tcp:labcibe-dev-db-server.database.windows.net,1433;Initial Catalog=labcibe-alertas-development;Persist Security Info=False;User ID=api_user;Password=Ap1Tak3M3T0Heaven;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;";
+    private readonly string connectionString = "";
 
     [HttpPost]
     public async Task<IActionResult> Products([FromBody] ProductsDto model)
