@@ -1,3 +1,8 @@
+
+//using DataLayer.cs.Repositories;
+using ProductosApp.Application;
+using ProductosApp.Persistence;
+
 var builder = WebApplication.CreateBuilder(args);
 
 
@@ -19,10 +24,12 @@ builder.Services.AddCors(options =>
 builder.Services.AddControllers().AddNewtonsoftJson(options =>
     options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
 );
-
+builder.Services.AddApplicationDependencies();
+builder.Services.AddSingleton<IProductsRepository, InMemoryProductsRepository>();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-
+//builder.Services.AddTransient<IProductService, ProductsService>();
+////builder.Services.AddTransient<IProductRepository, ProductsRepositorye>();
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())

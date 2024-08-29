@@ -1,27 +1,40 @@
-﻿using Dapper;
+﻿
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Reports.Models;
-using System.Data.SqlClient;
+using Microsoft.AspNetCore.StaticFiles.Infrastructure;
+using ProductosApp.Application;
+using ProductosApp.Domain;
+
+
 
 namespace Reports.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class ProductsController : ControllerBase
+public class ProductsController(IMediator mediator) : ControllerBase
 {
-    private readonly string connectionString = "";
+    private readonly string connectionString = "Data Source=DESKTOP-BPS7RH2;Initial Catalog=LabParadigmas;Integrated Security=True;Connect Timeout=30;Encrypt=False;Trust Server Certificate=False;Application Intent=ReadWrite;Multi Subnet Failover=False";
+
+    //private IProductService _productService;
+    //  public// ProductsController(IProductService productsService)
+    //{
+    //   _productService = productsService;
+
+    // }
+    
 
     [HttpPost]
-    public async Task<IActionResult> Products([FromBody] ProductsDto model)
+    public async Task<IActionResult> Productos([FromBody] CreateProductCommand command)
     {
         try
         {
-            if (model == null)
+            if (command == null)
             {
                 return BadRequest("No se proporcionaron URLs de imágenes válidas.");
             }
+            Productos products = new() { Id = command.Id, Name = command.Name, Description= command.Description, Status= command.Status};
 
-            await SaveReport(model);
+            await mediator.Send(command);
 
             // Procesar cada URL de imagen si no están vacías
             //  TODO...
@@ -34,21 +47,4 @@ public class ProductsController : ControllerBase
         }
     }
 
-    private async Task<int> SaveReport(ProductsDto model)
-    {
-        using (var connection = new SqlConnection(connectionString))
-        {
-            await connection.OpenAsync();
-
-            var query = "INSERT INTO Products (Name, Description, Status) OUTPUT INSERTED.Id VALUES (@Name, @Description, @Status);";
-            var parameters = new
-            {
-                CustomerName = string.IsNullOrWhiteSpace(model.Name) ? null : model.Name,                
-                Description = string.IsNullOrWhiteSpace(model.Description) ? null : model.Description,
-                Status = model.Status.HasValue ? (bool?)model.Status.Value : null,
-            };
-
-            return await connection.QuerySingleAsync<int>(query, parameters);
-        }
-    }
 }
