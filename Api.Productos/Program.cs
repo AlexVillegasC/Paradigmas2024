@@ -1,3 +1,8 @@
+using BussinesLayer.Services;
+using BussinesLayer.Services.Interfaces;
+using DataLayer.Repositories;
+using DataLayer.Repositories.Interfaces;
+
 var builder = WebApplication.CreateBuilder(args);
 
 
@@ -22,6 +27,9 @@ builder.Services.AddControllers().AddNewtonsoftJson(options =>
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+builder.Services.AddTransient<IProductsService, ProductsService>();
+builder.Services.AddTransient<IProductRepository, ProductsRepository>();
 
 var app = builder.Build();
 
