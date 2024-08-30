@@ -1,48 +1,49 @@
-﻿using BussinesLayer.Services.Interfaces;
-using Dapper;
+﻿using Api.Domain.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Reports.Models;
-using System.Data.SqlClient;
 
-namespace Reports.Controllers;
-
-[Route("api/[controller]")]
-[ApiController]
-public class ProductsController : ControllerBase
+namespace Reports.Controllers
 {
-    private readonly string connectionString = "";
-
-    private IProductsService _productsService;
-
-    public ProductsController(IProductsService productsService) 
+    [Route("api/[controller]")]
+    [ApiController]
+    public class ProductsController : ControllerBase
     {
-        _productsService = productsService;
-    }
+        private readonly IProductstService _reportService;
 
-    [HttpPost]
-    public async Task<IActionResult> Products([FromBody] ProductsDto model)
-    {
-        try
+        public ProductsController(IProductstService reportService)
         {
-            if (model == null)
+            _reportService = reportService;
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> PostReport([FromBody] ProductsDto dto)
+        {
+            try
             {
-                return BadRequest("No se proporcionaron URLs de imágenes válidas.");
+                if (dto == null)
+                {
+                    return BadRequest("No se proporcionaron URLs de imágenes válidas.");
+                }
+
+                // Todo Mapper
+                var model = new Api.Domain.Entities.Products() {                     
+                    Description = dto.Description,
+                    CustomerName = dto.CustomerName, 
+                    Status = dto.Status, 
+                    CustomerNumber = dto.CustomerNumber
+                };
+                var reportId = await _reportService.SaveReportAsync(model);
+
+                // Procesar cada URL de imagen si no están vacías
+                // TODO...
+
+                return Ok("Las imágenes han sido procesadas correctamente.");
             }
-
-            // Mapping 
-            Shared.Models.Products products = new() { Name = model.Name, Description = model.Description, Status =  model.Status };
-            
-            await _productsService.SaveProduct(products);
-
-            // Procesar cada URL de imagen si no están vacías
-            //  TODO...
-
-            return Ok("Las imágenes han sido procesadas correctamente.");
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Error interno del servidor: {ex.Message}");
+            }
         }
-        catch (Exception ex)
-        {
-            return StatusCode(500, $"Error interno del servidor: {ex.Message}");
-        }
+
     }
-
 }
