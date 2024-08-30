@@ -1,4 +1,4 @@
-﻿namespace Reports.Models;
+﻿namespace Api.Domain.Entities;
 
 public class Screenshot
 {

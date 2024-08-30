@@ -1,12 +1,17 @@
-using BussinesLayer.Services;
-using BussinesLayer.Services.Interfaces;
-using DataLayer.Repositories;
-using DataLayer.Repositories.Interfaces;
+using Api.Domain.Interfaces;
+using Api.Domain.Services;
+using Api.Infrastructure.Data;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
 
 
+builder.Services.AddDbContext<ProductsContext>(options =>
+      options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
 builder.Services.AddControllers();
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
@@ -28,10 +33,16 @@ builder.Services.AddControllers().AddNewtonsoftJson(options =>
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddTransient<IProductsService, ProductsService>();
-builder.Services.AddTransient<IProductRepository, ProductsRepository>();
+builder.Services.AddScoped<IProductstService, ProductsService>();
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 var app = builder.Build();
+
+using (var scope = app.Services.CreateScope())
+{
+    var dbContext = scope.ServiceProvider.GetRequiredService<ProductsContext>();
+    dbContext.Database.Migrate();
+}
 
 if (app.Environment.IsDevelopment())
 {
