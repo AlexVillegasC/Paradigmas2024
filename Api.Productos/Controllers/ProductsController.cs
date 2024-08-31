@@ -1,54 +1,53 @@
-﻿using Dapper;
+﻿using Api.Domain.Entities;
+using Api.Domain.Interfaces;
 using Microsoft.AspNetCore.Mvc;
-using Reports.Models;
-using System.Data.SqlClient;
+using System;
+using System.Threading.Tasks;
 
-namespace Reports.Controllers;
-
-[Route("api/[controller]")]
-[ApiController]
-public class ProductsController : ControllerBase
+namespace Reports.Controllers
 {
-    private readonly string connectionString = "Server=tcp:labcibe-dev-db-server.database.windows.net,1433;Initial Catalog=labcibe-alertas-development;Persist Security Info=False;User ID=api_user;Password=Ap1Tak3M3T0Heaven;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;";
-
-    [HttpPost]
-    public async Task<IActionResult> Products([FromBody] ProductsDto model)
+    [Route("api/[controller]")]
+    [ApiController]
+    public class ProductsController : ControllerBase
     {
-        try
+        private readonly IProduct _productsService;
+
+        public ProductsController(IProduct productsService)
+        {
+            _productsService = productsService;
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetProducts()
+        {
+            try
+            {
+                var products = await _productsService.GetProducts();
+                return Ok(products);
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+
+
+        [HttpPost]
+        public async Task<IActionResult> AddProduct([FromBody] Product model)
         {
             if (model == null)
             {
-                return BadRequest("No se proporcionaron URLs de imágenes válidas.");
+                return BadRequest("El modelo del producto no puede ser nulo.");
             }
 
-            await SaveReport(model);
-
-            // Procesar cada URL de imagen si no están vacías
-            //  TODO...
-
-            return Ok("Las imágenes han sido procesadas correctamente.");
-        }
-        catch (Exception ex)
-        {
-            return StatusCode(500, $"Error interno del servidor: {ex.Message}");
-        }
-    }
-
-    private async Task<int> SaveReport(ProductsDto model)
-    {
-        using (var connection = new SqlConnection(connectionString))
-        {
-            await connection.OpenAsync();
-
-            var query = "INSERT INTO Products (Name, Description, Status) OUTPUT INSERTED.Id VALUES (@Name, @Description, @Status);";
-            var parameters = new
+            if (string.IsNullOrWhiteSpace(model.Name))
             {
-                CustomerName = string.IsNullOrWhiteSpace(model.Name) ? null : model.Name,                
-                Description = string.IsNullOrWhiteSpace(model.Description) ? null : model.Description,
-                Status = model.Status.HasValue ? (bool?)model.Status.Value : null,
-            };
+                return BadRequest("El nombre del producto es requerido.");
+            }
 
-            return await connection.QuerySingleAsync<int>(query, parameters);
+            var productId = await _productsService.SaveReport(model);
+
+            return CreatedAtAction(nameof(AddProduct), new { id = productId }, model);
         }
     }
 }
