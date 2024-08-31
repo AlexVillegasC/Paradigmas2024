@@ -1,9 +1,17 @@
+using Api.Productos.Application.UseCases;
+using Api.Productos.Core.Interfaces;
+using Api.Productos.Infrastructure.Repositories;
+
 var builder = WebApplication.CreateBuilder(args);
 
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+builder.Services.AddScoped(_ => "Server=tcp:curso-paradigmas-lab1.database.windows.net,1433;Initial Catalog=Paradigmas-UNA;Persist Security Info=False;User ID=lab1-admin;Password=Pequirito22;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;");
+builder.Services.AddScoped<SaveProductUseCase>();
+builder.Services.AddScoped<IProductRepository, ProductRepository>();
 
 var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 
