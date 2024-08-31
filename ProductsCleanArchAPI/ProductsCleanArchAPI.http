@@ -1,0 +1,6 @@
+@ProductsCleanArchAPI_HostAddress = http://localhost:5044
+
+GET {{ProductsCleanArchAPI_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
