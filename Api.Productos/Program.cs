@@ -1,6 +1,8 @@
 using Api.Domain.Interfaces;
 using Api.Domain.Services;
 using Api.Infrastructure.Data;
+using ChatBot_Test.Mappings;
+using ChatBot_Test.Middlewares;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 
@@ -36,7 +38,10 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<IProductstService, ProductsService>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
+builder.Services.AddAutoMapper(typeof(MappingProfile));
+
 var app = builder.Build();
+
 
 using (var scope = app.Services.CreateScope())
 {
@@ -50,11 +55,11 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+
 app.UseHttpsRedirection();
 app.UseCors(MyAllowSpecificOrigins);
-
 app.UseAuthorization();
-
 app.MapControllers();
-
+app.UseMiddleware<ExceptionHandlingMiddleware>();
+app.UseMiddleware<DtoValidationMiddleware>();
 app.Run();
