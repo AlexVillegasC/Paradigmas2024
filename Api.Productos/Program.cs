@@ -55,10 +55,15 @@ using (var scope = app.Services.CreateScope())
     dbContext.Database.Migrate();
 }
 
-if (app.Environment.IsDevelopment())
+// Swager para cuando esta desplegado porque no funco
+if (app.Environment.IsDevelopment() || app.Environment.IsStaging() || app.Environment.IsProduction())
 {
     app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerUI(c =>
+    {
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "Diosito que esta ves si sirva");
+        c.RoutePrefix = string.Empty;
+    });
 }
 
 app.UseSentryTracing();
