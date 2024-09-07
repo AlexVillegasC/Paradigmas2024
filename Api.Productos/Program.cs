@@ -4,10 +4,10 @@ using Api.Infrastructure.Data;
 using ChatBot_Test.Mappings;
 using ChatBot_Test.Middlewares;
 using Microsoft.EntityFrameworkCore;
+using Sentry;
 using Microsoft.Extensions.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
-
 
 builder.Services.AddDbContext<ProductsContext>(options =>
       options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
@@ -31,6 +31,12 @@ builder.Services.AddCors(options =>
 builder.Services.AddControllers().AddNewtonsoftJson(options =>
     options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
 );
+builder.WebHost.UseSentry(options =>
+{
+    options.Dsn = "https://9d3a3fd56906bc0a996243056719a0df@o4507909615845376.ingest.us.sentry.io/4507909617745920"; 
+    options.Debug = true;
+    options.TracesSampleRate = 1.0; 
+});
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -55,6 +61,17 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseSentryTracing();
+
+if (app.Environment.IsDevelopment())
+{
+    app.UseDeveloperExceptionPage();
+}
+else
+{
+    app.UseExceptionHandler("/Home/Error");
+    app.UseHsts();
+}
 
 app.UseHttpsRedirection();
 app.UseCors(MyAllowSpecificOrigins);
