@@ -10,5 +10,5 @@ public class ProductsContext : DbContext
     {
     }
 
-    public DbSet<Products> Products { get; set; }
+    public DbSet<Domain.Entities.Products> Products { get; set; }
 }

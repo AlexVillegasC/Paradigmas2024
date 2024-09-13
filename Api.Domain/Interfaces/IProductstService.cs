@@ -4,5 +4,5 @@ namespace Api.Domain.Interfaces;
 
 public interface IProductstService
 {
-    Task<int> SaveReportAsync(Products model);
+    Task<int> SaveProductAsync(Entities.Products model);
 }

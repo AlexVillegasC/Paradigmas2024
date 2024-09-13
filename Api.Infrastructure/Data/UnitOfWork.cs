@@ -6,18 +6,18 @@ namespace Api.Infrastructure.Data;
 public class UnitOfWork : IUnitOfWork
 {
     private readonly ProductsContext _context;
-    private IRepository<Products> _reports;
+    private IRepository<Domain.Entities.Products> _products;
 
     public UnitOfWork(ProductsContext context)
     {
         _context = context;
     }
 
-    public IRepository<Products> Reports
+    public IRepository<Domain.Entities.Products> Products
     {
         get
         {
-            return _reports ??= new ProductsRepository<Products>(_context);
+            return _products ??= new ProductsRepository<Domain.Entities.Products>(_context);
         }
     }
 

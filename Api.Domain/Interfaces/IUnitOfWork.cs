@@ -4,6 +4,6 @@ using Api.Domain.Entities;
 
 public interface IUnitOfWork : IDisposable
 {
-    IRepository<Products> Reports { get; }
+    IRepository<Products> Products { get; }
     Task<int> CompleteAsync();
 }

@@ -1,13 +1,12 @@
-﻿using Api.Domain.Entities;
-using AutoMapper;
-using Reports.Models;
+﻿using AutoMapper;
+using Products.Models;
 
-namespace ChatBot_Test.Mappings;
+namespace Api.Products.Mappings;
 
 public class MappingProfile : Profile
 {
     public MappingProfile()
     {
-        CreateMap<ProductsDto, Products>();
+        CreateMap<ProductsDto, Domain.Entities.Products>();
     }
 }

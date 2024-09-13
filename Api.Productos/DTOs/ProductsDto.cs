@@ -1,4 +1,4 @@
-﻿namespace Reports.Models;
+﻿namespace Products.Models;
 
 public class ProductsDto
 {

@@ -1,10 +1,9 @@
 using Api.Domain.Interfaces;
 using Api.Domain.Services;
 using Api.Infrastructure.Data;
-using ChatBot_Test.Mappings;
+using Api.Products.Mappings;
 using ChatBot_Test.Middlewares;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -60,6 +59,5 @@ app.UseHttpsRedirection();
 app.UseCors(MyAllowSpecificOrigins);
 app.UseAuthorization();
 app.MapControllers();
-app.UseMiddleware<ExceptionHandlingMiddleware>();
 app.UseMiddleware<DtoValidationMiddleware>();
 app.Run();

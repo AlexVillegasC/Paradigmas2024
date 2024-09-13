@@ -11,19 +11,19 @@ public class ProductsService : IProductstService
         _unitOfWork = unitOfWork;
     }
 
-    public async Task<int> SaveReportAsync(Products model)
+    public async Task<int> SaveProductAsync(Entities.Products model)
     {
-        var report = new Products
-        {
+        var product = new Entities.Products
+        {            
             Description = string.IsNullOrWhiteSpace(model.Description) ? null : model.Description,
             Status = model.Status,
             CustomerName = string.IsNullOrWhiteSpace(model.CustomerName) ? null : model.CustomerName,
             CustomerNumber = string.IsNullOrWhiteSpace(model.CustomerNumber) ? null : model.CustomerNumber
         };
 
-        await _unitOfWork.Reports.AddAsync(report);
+        await _unitOfWork.Products.AddAsync(product);
         await _unitOfWork.CompleteAsync();
 
-        return report.Id;
+        return product.Id;
     }
 }

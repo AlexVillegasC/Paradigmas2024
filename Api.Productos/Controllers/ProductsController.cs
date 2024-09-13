@@ -2,29 +2,29 @@
 using Api.Domain.Interfaces;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using Reports.Models;
+using Products.Models;
 
-namespace Reports.Controllers;
+namespace Products.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
 public class ProductsController : ControllerBase
 {
-    private readonly IProductstService _reportService;
+    private readonly IProductstService _productsService;
     private readonly IMapper _mapper;
 
     public ProductsController(IProductstService reportService, IMapper mapper)
     {
-        _reportService = reportService;
+        _productsService = reportService;
         _mapper = mapper;
     }
 
     [HttpPost]
     public async Task<IActionResult> PostReport([FromBody] ProductsDto dto)
     {
-        Products report = _mapper.Map<Products>(dto);
+        Api.Domain.Entities.Products products = _mapper.Map<Api.Domain.Entities.Products>(dto);
 
-        await _reportService.SaveReportAsync(report);
+        await _productsService.SaveProductAsync(products);
 
         return Ok();
     }
