@@ -9,8 +9,18 @@ using Microsoft.Extensions.Configuration;
 var builder = WebApplication.CreateBuilder(args);
 
 
+builder.WebHost.UseSentry(o =>
+{
+    o.Dsn = "https://6d3c3ad4385b9ae742880f16fa13d064@o4507908944822272.ingest.us.sentry.io/4507908951506944";
+    o.Debug = true;
+    o.TracesSampleRate = 1.0;
+});
+
+
+
 builder.Services.AddDbContext<ProductsContext>(options =>
-      options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
 
 builder.Services.AddControllers();
 
