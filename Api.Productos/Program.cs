@@ -8,6 +8,11 @@ using Microsoft.Extensions.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.WebHost.UseSentry(o => { 
+o.Dsn = "https://e1f24cc7cea00abc3b2fc0ec9ee5e07d@o4507908881645568.ingest.us.sentry.io/4507908885184512";
+o.Debug = true;
+o.TracesSampleRate = 1.0;
+});
 
 builder.Services.AddDbContext<ProductsContext>(options =>
       options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
@@ -54,7 +59,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
+SentrySdk.CaptureMessage("Starting application...");
 
 app.UseHttpsRedirection();
 app.UseCors(MyAllowSpecificOrigins);

@@ -12,7 +12,10 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.8" />   
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.8" />
+    <PackageReference Include="Sentry.AspNetCore" Version="4.10.2" />
+    <PackageReference Include="Sentry.Profiling" Version="4.10.2" />
+    <PackageReference Include="Sentry.Tunnel" Version="3.18.0" />   
     <ProjectReference Include="..\Api.Domain\Api.Domain.csproj" />
   </ItemGroup>
 
